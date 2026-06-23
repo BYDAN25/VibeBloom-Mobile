@@ -14,8 +14,11 @@ import { useLugares } from "../hooks/useLugares";
 import { Lugar } from "../types";
 
 export default function HomeScreen() {
-  const { lugares, cargando } = useLugares();
 
+  // Obtiene la información desde el Custom Hook
+  const { lugares, cargando, getLugar } = useLugares();
+
+  // Muestra un mensaje cuando el usuario selecciona un lugar
   const verLugar = (lugar: Lugar) => {
     Alert.alert(
       "VibeBloom",
@@ -34,50 +37,67 @@ export default function HomeScreen() {
     );
   };
 
-  const renderLugar = ({ item }: { item: Lugar }) => (
-    <View style={styles.card}>
-      <Image source={{ uri: item.imagen }} style={styles.imagen} />
+  // Renderiza cada tarjeta de la lista
+  const renderLugar = ({ item }: { item: Lugar }) => {
 
-      <View style={styles.info}>
-        <Text style={styles.nombre}>{item.nombre}</Text>
+    // Obtiene la información del lugar mediante su identificador
+    const lugar = getLugar(item.id);
 
-        <Text style={styles.categoria}>
-          {item.categoria} • {item.ciudad}
-        </Text>
+    return (
+      <View style={styles.card}>
+        <Image
+          source={{ uri: lugar?.imagen }}
+          style={styles.imagen}
+        />
 
-        <Text style={styles.descripcion}>
-          {item.descripcion}
-        </Text>
-
-        <View style={styles.footer}>
-          <Text style={styles.precio}>
-            ${item.precio}
+        <View style={styles.info}>
+          <Text style={styles.nombre}>
+            {lugar?.nombre}
           </Text>
 
-          <TouchableOpacity
-            style={styles.boton}
-            onPress={() => verLugar(item)}
-          >
-            <Text style={styles.botonTexto}>
-              Ver lugar
+          <Text style={styles.categoria}>
+            {lugar?.categoria} • {lugar?.ciudad}
+          </Text>
+
+          <Text style={styles.descripcion}>
+            {lugar?.descripcion}
+          </Text>
+
+          <View style={styles.footer}>
+            <Text style={styles.precio}>
+              ${lugar?.precio}
             </Text>
-          </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.boton}
+              onPress={() => verLugar(item)}
+            >
+              <Text style={styles.botonTexto}>
+                Ver lugar
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
-  );
+    );
+  };
 
+  // Muestra un indicador mientras los datos se cargan
   if (cargando) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator size="large" color="#8B5CF6" />
-        <Text>Cargando lugares...</Text>
+        <Text style={{ marginTop: 10 }}>
+          Cargando lugares...
+        </Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
+
+      {/* Muestra la lista de lugares utilizando FlatList */}
       <FlatList
         data={lugares}
         keyExtractor={(item) => item.id.toString()}
@@ -85,6 +105,7 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.lista}
       />
+
     </View>
   );
 }
