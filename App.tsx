@@ -2,7 +2,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Text } from "react-native";
 
-import HomeScreen from "./src/screens/HomeScreen";
+import InicioStack from "./src/navigation/InicioStack";
 import PerfilScreen from "./src/screens/PerfilScreen";
 
 const Tab = createBottomTabNavigator();
@@ -11,18 +11,16 @@ export default function App() {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName="Inicio"
         screenOptions={{
-          headerTitleAlign: "center",
+          headerShown: false,
           tabBarActiveTintColor: "#8B5CF6",
           tabBarInactiveTintColor: "#777",
         }}
       >
         <Tab.Screen
           name="Inicio"
-          component={HomeScreen}
+          component={InicioStack}
           options={{
-            tabBarLabel: "Inicio",
             tabBarIcon: () => <Text>🏠</Text>,
           }}
         />
@@ -31,7 +29,8 @@ export default function App() {
           name="Perfil"
           component={PerfilScreen}
           options={{
-            tabBarLabel: "Perfil",
+            headerShown: true,
+            headerTitle: "Perfil",
             tabBarIcon: () => <Text>👤</Text>,
           }}
         />

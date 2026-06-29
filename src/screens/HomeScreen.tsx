@@ -6,35 +6,35 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  Alert,
   ActivityIndicator,
 } from "react-native";
 
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+
 import { useLugares } from "../hooks/useLugares";
 import { Lugar } from "../types";
+import { InicioStackParamList } from "../navigation/navigationTypes";
+
+// Tipo de navegación para HomeScreen
+type HomeScreenNavigationProp = NativeStackNavigationProp<
+  InicioStackParamList,
+  "Home"
+>;
 
 export default function HomeScreen() {
 
   // Obtiene la información desde el Custom Hook
   const { lugares, cargando, getLugar } = useLugares();
 
-  // Muestra un mensaje cuando el usuario selecciona un lugar
+  // Permite navegar entre pantallas
+  const navigation = useNavigation<HomeScreenNavigationProp>();
+
+  // Navega a la pantalla de detalle enviando el id del lugar
   const verLugar = (lugar: Lugar) => {
-    Alert.alert(
-      "VibeBloom",
-      `¿Deseas ver más información de "${lugar.nombre}"?`,
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Aceptar",
-          onPress: () =>
-            Alert.alert("Perfecto", `Seleccionaste ${lugar.nombre}`),
-        },
-      ]
-    );
+    navigation.navigate("DetalleLugar", {
+      lugarId: lugar.id,
+    });
   };
 
   // Renderiza cada tarjeta de la lista
